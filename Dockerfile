@@ -1,12 +1,7 @@
-FROM jagregory/pandoc
+FROM ubuntu:14.04
 
-RUN locale-gen en_US.UTF-8
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US:en
-ENV LC_ALL en_US.UTF-8
-
-RUN apt-get update && apt-get -y install git-core curl build-essential openssl libssl-dev
-RUN apt-get -y install python
+RUN apt-get update -y
+RUN apt-get install -y pandoc texlive-latex-base texlive-xetex latex-xcolor texlive-math-extra texlive-latex-extra texlive-fonts-extra curl wget git fontconfig make build-essential openssl libssl-dev
 
 RUN git clone https://github.com/joyent/node.git
 WORKDIR node
