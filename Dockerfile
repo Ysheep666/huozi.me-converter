@@ -1,5 +1,7 @@
 FROM jagregory/pandoc
 
+ENV LANG en_US.UTF-8
+
 RUN apt-get update && apt-get -y install git-core curl build-essential openssl libssl-dev
 RUN apt-get -y install python
 
