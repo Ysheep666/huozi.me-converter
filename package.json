@@ -1,0 +1,12 @@
+{
+  "name": "huozi.me-converter",
+  "version": "0.0.1",
+  "private": true,
+  "author": "不会飞的羊",
+  "dependencies": {
+    "body-parser": "1.15.0",
+    "express": "4.13.4",
+    "lodash": "4.6.1",
+    "pdc": "0.2.2"
+  }
+}
