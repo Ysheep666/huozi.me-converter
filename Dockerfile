@@ -18,6 +18,6 @@ WORKDIR /opt/src
 
 RUN npm install
 
-EXPOSE 3000
+EXPOSE 3010
 RUN touch .foreverignore
 CMD forever -w ./index.js

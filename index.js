@@ -1,6 +1,7 @@
 var fs = require('fs');
 var express = require('express');
 var bodyParser = require('body-parser');
+var cors = require('cors')
 var _ = require('lodash');
 var pdc = require('pdc');
 var app = express();
@@ -11,18 +12,14 @@ var converterTo = function(content, to, callback) {
   }
 
   var filename = Math.random().toString(36).substring(2);
-  var cb = function(err, result) {
-    if (err) {
-      return callback(new Error('转化失败'))
-    }
-
-    fs.readFile('.tmp/' + filename + '.docx', function(err, data) {
+  var cb = function(suffix) {
+    return function(err, result) {
       if (err) {
-        return callback(new Error('转化失败'))
+        console.log(err);
+        return callback(new Error('转化失败'));
       }
-
-      callback(null, data);
-    });
+      callback(null, (filename + suffix));
+    };
   };
 
   var folderStat = null;
@@ -34,16 +31,47 @@ var converterTo = function(content, to, callback) {
   }
 
   switch (to) {
+    case 'pdf':
+      pdc(content, 'markdown', 'pdf', ['-t', 'latex', '-o', '.tmp/' + filename + '.pdf'], cb('.pdf'));
+      break;
     case 'docx':
-      pdc(content, 'markdown', 'docx', [ '-o', '.tmp/' + filename + '.docx' ], cb)
+      pdc(content, 'markdown', 'docx', ['-o', '.tmp/' + filename + '.docx'], cb('.docx'));
       break;
     default:
       callback(new Error('转化格式错误'))
   }
 };
 
+if (process.env.CORS_ORIGIN) {
+  app.use(cors({
+    origin: process.env.CORS_ORIGIN
+  }));
+} else {
+  app.use(cors());
+}
+
 app.get('/', function (req, res) {
   res.send('Hello, word!');
+});
+
+// 文件下载
+app.get('/download/:file(*)', function (req, res) {
+  res.download(__dirname + '/.tmp/' + req.params.file, req.query && req.query.name ? req.query.name : null);
+});
+
+// 转化 markdown 为 pdf
+app.post('/markdownConverterPdf', bodyParser.urlencoded({extended: false}), function (req, res, done) {
+  if (!req.body || !req.body.content) {
+    return done('请求参数错误')
+  }
+
+  converterTo(req.body.content, 'pdf', function(err, result) {
+    if (err) {
+      return done('转化文件失败')
+    }
+
+    return res.send({name: result});
+  });
 });
 
 // 转化 markdown 为 word
@@ -57,7 +85,7 @@ app.post('/markdownConverterWord', bodyParser.urlencoded({extended: false}), fun
       return done('转化文件失败')
     }
 
-    return res.send({result: result});
+    return res.send({name: result});
   });
 });
 
@@ -96,6 +124,6 @@ app.use(function (req, res) {
   }
 });
 
-app.listen(3000, function () {
-  console.log('Example app listening on port 3000!');
+app.listen(3010, function () {
+  console.log('Example app listening on port 3010!');
 });
