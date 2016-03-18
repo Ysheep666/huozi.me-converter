@@ -16,7 +16,7 @@ var converterTo = function(content, to, callback) {
     return function(err, result) {
       if (err) {
         console.log(err);
-        return callback(new Error('转化失败'));
+        return callback(new Error('转化文件失败'));
       }
       callback(null, (filename + suffix));
     };
@@ -36,6 +36,9 @@ var converterTo = function(content, to, callback) {
       break;
     case 'docx':
       pdc(content, 'markdown', 'docx', ['-o', '.tmp/' + filename + '.docx'], cb('.docx'));
+      break;
+    case 'epub':
+      pdc(content, 'markdown', 'epub', ['-o', '.tmp/' + filename + '.epub'], cb('.epub'));
       break;
     default:
       callback(new Error('转化格式错误'))
@@ -88,6 +91,22 @@ app.post('/markdownConverterWord', bodyParser.urlencoded({extended: false}), fun
     return res.send({name: result});
   });
 });
+
+// 转化 markdown 为 epub
+app.post('/markdownConverterEpub', bodyParser.urlencoded({extended: false}), function (req, res, done) {
+  if (!req.body || !req.body.content) {
+    return done('请求参数错误')
+  }
+
+  converterTo(req.body.content, 'epub', function(err, result) {
+    if (err) {
+      return done('转化文件失败')
+    }
+
+    return res.send({name: result});
+  });
+});
+
 
 // 错误处理
 app.use(function (err, req, res, done) {

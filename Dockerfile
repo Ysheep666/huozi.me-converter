@@ -3,7 +3,13 @@ FROM ubuntu:14.04
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update -y
-RUN apt-get install -y pandoc texlive-full curl wget git fontconfig make build-essential openssl libssl-dev
+RUN apt-get install -y pandoc texlive-full texlive-latex-recommended curl wget git fontconfig make build-essential openssl libssl-dev
+
+
+ADD latexcat /usr/local/bin/latexcat
+RUN chmod a+x /usr/local/bin/latexcat
+
+ENTRYPOINT ["/usr/local/bin/latexcat"]
 
 RUN git clone https://github.com/joyent/node.git
 WORKDIR node
