@@ -32,13 +32,13 @@ var converterTo = function(content, to, callback) {
 
   switch (to) {
     case 'pdf':
-      pdc(content, 'markdown', 'pdf', ['-t', 'latex', '-o', '.tmp/' + filename + '.pdf', '--latex-engine=xelatex', '--template=pm-template.latex'], cb('.pdf'));
+      pdc(content, 'markdown', 'pdf', ['-o', '.tmp/' + filename + '.pdf', '--toc', '--smart', '--template=pm-template.latex', '--latex-engine=xelatex', '-V' 'mainfont="SimSun"'], cb('.pdf'));
       break;
     case 'docx':
-      pdc(content, 'markdown', 'docx', ['-o', '.tmp/' + filename + '.docx'], cb('.docx'));
+      pdc(content, 'markdown', 'docx', ['-o', '.tmp/' + filename + '.docx', '--toc', '--smart'], cb('.docx'));
       break;
     case 'epub':
-      pdc(content, 'markdown', 'epub', ['-o', '.tmp/' + filename + '.epub'], cb('.epub'));
+      pdc(content, 'markdown', 'epub', ['-o', '.tmp/' + filename + '.epub', '--toc', '--smart'], cb('.epub'));
       break;
     default:
       callback(new Error('转化格式错误'))
