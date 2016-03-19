@@ -32,7 +32,7 @@ var converterTo = function(content, to, callback) {
 
   switch (to) {
     case 'pdf':
-      pdc(content, 'markdown', 'pdf', ['-o', '.tmp/' + filename + '.pdf', '--template=pm-template.latex', '--latex-engine=xelatex', '-V', 'mainfont="SimSun"'], cb('.pdf'));
+      pdc(content, 'markdown', 'pdf', ['-o', '.tmp/' + filename + '.pdf'], cb('.pdf'));
       break;
     case 'docx':
       pdc(content, 'markdown', 'docx', ['-o', '.tmp/' + filename + '.docx'], cb('.docx'));
